@@ -49,3 +49,27 @@ SELECT name, population / 10 FROM world WHERE population < 10000;
 SELECT name, population FROM world WHERE continent IN ('Europe', 'Asia');
 SELECT name FROM world WHERE name IN ('Cuba', 'Togo');
 SELECT name FROM world WHERE continent = 'South America' AND population > 40000000;
+
+
+SELECT * FROM nobel WHERE yr = 1950;
+SELECT winner FROM nobel WHERE yr = 1962 AND subject = 'Literature';
+SELECT yr, subject FROM nobel WHERE winner = 'Albert Einstein';
+SELECT winner FROM nobel WHERE subject = 'Peace' AND yr >= 2000;
+SELECT * FROM nobel WHERE subject = 'Literature' AND yr BETWEEN 1980 AND 1989;
+SELECT * FROM nobel WHERE winner IN ('Theodore Roosevelt', 'Woodrow Wilson', 'Jimmy Carter', 'Barack Obama');
+SELECT winner FROM nobel WHERE winner LIKE 'John%';
+SELECT * FROM nobel WHERE subject = 'Physics' AND yr = 1980 OR subject = 'Chemistry' AND yr = 1984;
+SELECT * FROM nobel WHERE yr = 1980 AND subject != 'Chemistry' AND subject != 'Medicine';
+SELECT * FROM nobel WHERE yr < 1910 AND subject = 'Medicine' OR subject = 'Literature' AND yr >= 2004;
+SELECT * FROM nobel WHERE winner LIKE 'PETER GRÜNBERG';
+SELECT * FROM nobel WHERE winner LIKE 'EUGENE O''NEILL';
+SELECT winner, yr, subject FROM nobel WHERE winner LIKE 'Sir%' ORDER BY yr DESC;
+SELECT winner, subject FROM nobel WHERE yr=1984 ORDER BY subject IN ('Physics', 'Chemistry'), subject, winner;
+
+SELECT winner FROM nobel WHERE winner LIKE 'C%' AND winner LIKE '%n';
+SELECT COUNT(subject) FROM nobel WHERE subject = 'Chemistry' AND yr BETWEEN 1950 and 1960;
+SELECT COUNT(DISTINCT yr) FROM nobel WHERE yr NOT IN (SELECT DISTINCT yr FROM nobel WHERE subject = 'Medicine');
+SELECT subject, winner FROM nobel WHERE winner LIKE 'Sir%' AND yr LIKE '196%';
+SELECT yr FROM nobel WHERE yr NOT IN(SELECT yr FROM nobel WHERE subject IN ('Chemistry','Physics'));
+SELECT DISTINCT yr FROM nobel WHERE subject='Medicine' AND yr NOT IN(SELECT yr FROM nobel WHERE subject='Literature') AND yr NOT IN (SELECT yr FROM nobel WHERE subject='Peace');
+SELECT subject, COUNT(subject) FROM nobel WHERE yr ='1960' GROUP BY subject;
