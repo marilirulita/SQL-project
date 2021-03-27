@@ -66,7 +66,7 @@ SELECT * FROM nobel WHERE winner LIKE 'EUGENE O''NEILL';
 SELECT winner, yr, subject FROM nobel WHERE winner LIKE 'Sir%' ORDER BY yr DESC;
 SELECT winner, subject FROM nobel WHERE yr=1984 ORDER BY subject IN ('Physics', 'Chemistry'), subject, winner;
 
-SELECT winner FROM nobel WHERE winner LIKE 'C%' AND winner LIKE '%n';
+SELECT winner FROM nobel WHERE winner LIKE 'C%n';
 SELECT COUNT(subject) FROM nobel WHERE subject = 'Chemistry' AND yr BETWEEN 1950 and 1960;
 SELECT COUNT(DISTINCT yr) FROM nobel WHERE yr NOT IN (SELECT DISTINCT yr FROM nobel WHERE subject = 'Medicine');
 SELECT subject, winner FROM nobel WHERE winner LIKE 'Sir%' AND yr LIKE '196%';
