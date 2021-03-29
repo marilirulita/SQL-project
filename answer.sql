@@ -93,3 +93,21 @@ SELECT name FROM bbc WHERE population > (SELECT population FROM bbc WHERE name='
 SELECT name FROM bbc WHERE gdp > (SELECT MAX(gdp) FROM bbc WHERE region = 'Africa');
 SELECT name FROM bbc WHERE population < (SELECT population FROM bbc WHERE name='Russia') AND population > (SELECT population FROM bbc WHERE name='Denmark');
 SELECT name FROM bbc WHERE population > ALL (SELECT MAX(population) FROM bbc WHERE region = 'Europe') AND region = 'South Asia';
+
+
+SELECT SUM(population) FROM world;
+SELECT DISTINCT continent FROM world;
+SELECT SUM(gdp) FROM world WHERE continent = 'Africa';
+SELECT COUNT(name) FROM world WHERE area >= 1000000;
+SELECT SUM(population) FROM world WHERE name IN ('Estonia', 'Latvia', 'Lithuania');
+SELECT continent, COUNT(name) FROM world GROUP BY continent;
+SELECT continent, SUM(population) FROM world GROUP BY continent;
+SELECT continent, COUNT(name) FROM world WHERE population>200000000 GROUP BY continent;
+SELECT continent, SUM(population) FROM world GROUP BY continent HAVING SUM(population)>500000000;
+
+SELECT SUM(population) FROM bbc WHERE region = 'Europe';
+SELECT COUNT(name) FROM bbc WHERE population < 150000;
+SELECT AVG(population) FROM bbc WHERE name IN ('Poland', 'Germany', 'Denmark');
+SELECT region, SUM(population)/SUM(area) AS density FROM bbc GROUP BY region;
+SELECT name, population/area AS density FROM bbc WHERE population = (SELECT MAX(population) FROM bbc);
+SELECT region, SUM(area) FROM bbc GROUP BY region HAVING SUM(area)<= 20000000;
