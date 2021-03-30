@@ -111,3 +111,14 @@ SELECT AVG(population) FROM bbc WHERE name IN ('Poland', 'Germany', 'Denmark');
 SELECT region, SUM(population)/SUM(area) AS density FROM bbc GROUP BY region;
 SELECT name, population/area AS density FROM bbc WHERE population = (SELECT MAX(population) FROM bbc);
 SELECT region, SUM(area) FROM bbc GROUP BY region HAVING SUM(area)<= 20000000;
+
+SELECT subject, COUNT(winner) FROM nobel GROUP BY subject;
+SELECT subject, MIN(yr) FROM nobel GROUP BY subject;
+SELECT subject, COUNT(winner) FROM nobel WHERE yr = '2000' GROUP BY subject;
+SELECT COUNT(subject), COUNT(DISTINCT subject) FROM nobel WHERE yr = 1915;
+SELECT subject, COUNT(DISTINCT winner) FROM nobel GROUP BY subject;
+SELECT subject, COUNT(DISTINCT yr) FROM nobel GROUP BY subject;
+SELECT yr FROM nobel WHERE subject = 'Physics' GROUP BY yr HAVING COUNT(winner) = 3;
+SELECT winner FROM nobel GROUP BY winner HAVING COUNT(winner) > 1;
+SELECT winner FROM nobel GROUP BY winner HAVING COUNT(DISTINCT subject) > 1;
+SELECT yr, subject FROM nobel WHERE yr >= 2000 GROUP BY yr, subject HAVING COUNT(subject) = 3;
