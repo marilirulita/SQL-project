@@ -147,6 +147,17 @@ SELECT DISTINCT player, teamid FROM game JOIN goal ON matchid = id WHERE stadium
 SELECT DISTINCT player, teamid, gtime FROM game JOIN goal ON matchid = id WHERE stadium = 'Stadion Miejski (Wroclaw)' AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'));
 SELECT teamname, COUNT(*) FROM eteam JOIN goal ON teamid = id GROUP BY teamname HAVING COUNT(*) < 3;
 
+SELECT title, artist FROM album JOIN track ON (album.asin=track.album) WHERE song = 'Alison';
+SELECT artist FROM album JOIN track ON (album.asin=track.album) WHERE song = 'Exodus';
+SELECT song FROM album JOIN track ON (album.asin=track.album) WHERE title = 'Blur';
+SELECT title, COUNT(*) FROM album JOIN track ON (asin=album) GROUP BY title;
+SELECT title, COUNT(song) FROM album JOIN track ON (asin=album) WHERE song LIKE '%Heart%' GROUP BY title;
+SELECT song FROM album JOIN track ON (asin=album) WHERE song = title;
+SELECT DISTINCT title FROM album JOIN track ON (asin=album) WHERE title = artist;
+SELECT song, COUNT(DISTINCT album) FROM track GROUP BY song HAVING COUNT(DISTINCT album) > 2;
+SELECT title, price, COUNT(song) FROM album JOIN track x ON (asin=album) WHERE price / (SELECT COUNT(song) FROM track y WHERE x.album = y.album) < .50 GROUP BY title, price;
+SELECT title, (SELECT COUNT(song) FROM track y WHERE x.album = y.album) AS counter FROM album JOIN track x ON (asin=album) GROUP BY title, album ORDER BY counter DESC, title;
+
 SELECT who, name FROM ttms JOIN country ON (ttms.country=country.id) WHERE games = 2000;
 SELECT who, color FROM ttms JOIN country ON (ttms.country=country.id) WHERE name = 'Sweden';
 SELECT games FROM ttms JOIN country ON (ttms.country=country.id) WHERE name = 'China' AND color = 'gold';
