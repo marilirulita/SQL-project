@@ -122,3 +122,37 @@ SELECT yr FROM nobel WHERE subject = 'Physics' GROUP BY yr HAVING COUNT(winner) 
 SELECT winner FROM nobel GROUP BY winner HAVING COUNT(winner) > 1;
 SELECT winner FROM nobel GROUP BY winner HAVING COUNT(DISTINCT subject) > 1;
 SELECT yr, subject FROM nobel WHERE yr >= 2000 GROUP BY yr, subject HAVING COUNT(subject) = 3;
+
+
+SELECT matchid, player FROM goal WHERE teamid = 'GER';
+SELECT id,stadium,team1,team2 FROM game WHERE id = 1012;
+SELECT player, teamid, stadium, mdate FROM game JOIN goal ON (id=matchid) WHERE teamid = 'GER';
+SELECT team1, team2, player FROM game JOIN goal ON (id=matchid) WHERE player LIKE 'Mario%';
+SELECT player, teamid, coach, gtime FROM goal JOIN eteam ON (teamid=id) WHERE gtime<=10;
+SELECT mdate, teamname FROM game JOIN eteam ON (team1 = eteam.id) WHERE eteam.id = team1 AND coach = 'Fernando Santos';
+SELECT player FROM game JOIN goal ON (id = matchid) WHERE stadium = 'National Stadium, Warsaw';
+SELECT DISTINCT player FROM game JOIN goal ON matchid = id WHERE teamid != 'GER' AND (team1 = 'GER' OR team2 = 'GER');
+SELECT teamname, COUNT(*) FROM eteam JOIN goal ON id=teamid GROUP BY teamname;
+SELECT stadium, COUNT(stadium) FROM game JOIN goal ON id=matchid GROUP BY stadium;
+SELECT matchid, mdate, COUNT(teamid) FROM game JOIN goal ON matchid = id WHERE (team1 = 'POL' OR team2 = 'POL') GROUP BY matchid, mdate;
+SELECT matchid, mdate, COUNT(teamid) FROM game JOIN goal ON matchid = id WHERE teamid = 'GER' GROUP BY matchid, mdate;
+SELECT name, population ,CASE WHEN population<1000000 THEN 'small' WHEN population<10000000 THEN 'medium' ELSE 'large' END FROM world;
+SELECT mdate, team1, 
+  SUM(CASE WHEN teamid=team1 THEN 1 ELSE 0 END) score1, team2,
+  SUM(CASE WHEN teamid=team2 THEN 1 ELSE 0 END) score2 FROM game LEFT JOIN goal ON id = matchid GROUP BY mdate, matchid, team1, team2;
+
+SELECT player, teamid, COUNT(*) FROM game JOIN goal ON matchid = id WHERE (team1 = "GRE" OR team2 = "GRE") AND teamid != 'GRE' GROUP BY player, teamid;
+SELECT DISTINCT teamid, mdate FROM goal JOIN game on (matchid=id) WHERE mdate = '9 June 2012';
+SELECT DISTINCT player, teamid FROM game JOIN goal ON matchid = id WHERE stadium = 'National Stadium, Warsaw' AND (team1 = 'POL' OR team2 = 'POL') AND teamid != 'POL';
+SELECT DISTINCT player, teamid, gtime FROM game JOIN goal ON matchid = id WHERE stadium = 'Stadion Miejski (Wroclaw)' AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'));
+SELECT teamname, COUNT(*) FROM eteam JOIN goal ON teamid = id GROUP BY teamname HAVING COUNT(*) < 3;
+
+SELECT who, name FROM ttms JOIN country ON (ttms.country=country.id) WHERE games = 2000;
+SELECT who, color FROM ttms JOIN country ON (ttms.country=country.id) WHERE name = 'Sweden';
+SELECT games FROM ttms JOIN country ON (ttms.country=country.id) WHERE name = 'China' AND color = 'gold';
+SELECT who FROM ttws JOIN games ON (ttws.games=games.yr) WHERE city = 'Barcelona';
+SELECT city, color FROM ttws JOIN games ON (ttws.games=games.yr) WHERE who = 'Jing Chen';
+SELECT who, city FROM ttws JOIN games ON (ttws.games=games.yr) WHERE color = 'gold';
+SELECT games, color FROM ttmd JOIN team ON (ttmd.team=team.id) WHERE name = 'Yan Sen';
+SELECT name FROM ttmd JOIN team ON (ttmd.team=team.id) WHERE color = 'gold' AND games = 2004;
+SELECT name FROM ttmd JOIN team ON (ttmd.team=team.id) WHERE country = 'FRA';
