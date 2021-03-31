@@ -187,3 +187,33 @@ SELECT name, COUNT(movieid) FROM casting JOIN actor ON actorid=actor.id WHERE na
 SELECT title FROM movie JOIN casting ON (movieid=movie.id) JOIN actor ON (actorid=actor.id) WHERE name='Paul Hogan' AND ord = 1;
 SELECT name FROM movie JOIN casting ON movie.id = movieid JOIN actor ON actor.id = actorid WHERE ord = 1 AND director = 351;
 SELECT title, yr FROM movie, casting, actor WHERE name='Robert De Niro' AND movieid=movie.id AND actorid=actor.id AND ord = 3;
+
+
+SELECT code, name FROM party WHERE leader IS NULL;
+SELECT name FROM teacher WHERE dept IS NULL;
+SELECT teacher.name, dept.name FROM teacher INNER JOIN dept ON (teacher.dept=dept.id);
+SELECT teacher.name, dept.name FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
+SELECT teacher.name, dept.name FROM teacher RIGHT JOIN dept ON (teacher.dept=dept.id);
+SELECT name, party, COALESCE(party,'None') AS aff FROM msp WHERE name LIKE 'C%';
+SELECT name, party, NULLIF(party,'Lab') AS aff FROM msp WHERE name LIKE 'C%';
+SELECT name, COALESCE(mobile, '07986 444 2266')  FROM teacher;
+SELECT teacher.name, COALESCE(dept.name, 'None') FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
+SELECT COUNT(name), COUNT(mobile) FROM teacher;
+SELECT dept.name, COUNT(teacher.dept) FROM teacher RIGHT JOIN dept ON (teacher.dept=dept.id) WHERE teacher.dept = dept.id OR teacher.dept IS NULL GROUP BY dept.name;
+SELECT teacher.name, CASE WHEN dept.id = 1 OR dept.id = 2 THEN 'Sci' ELSE 'Art' END AS names FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
+SELECT teacher.name, CASE WHEN dept.id = 1 OR dept.id = 2 THEN 'Sci' WHEN dept.id = 3 THEN 'Art' ELSE 'None' END AS names FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
+
+SELECT teacher.name, dept.name FROM teacher LEFT OUTER JOIN dept ON (teacher.dept = dept.id);
+SELECT dept.name FROM teacher JOIN dept ON (dept.id = teacher.dept) WHERE teacher.name = 'Cutflower';
+SELECT dept.name, COUNT(teacher.name) FROM teacher RIGHT JOIN dept ON dept.id = teacher.dept GROUP BY dept.name;
+SELECT name, dept, COALESCE(dept, 0) AS result FROM teacher;
+SELECT name, CASE WHEN phone = 2752 THEN 'two' WHEN phone = 2753 THEN 'three' WHEN phone = 2754 THEN 'four' END AS digit FROM teacher;
+SELECT name, CASE WHEN dept IN (1) THEN 'Computing' ELSE 'Other' END FROM teacher;
+
+SELECT name FROM msp WHERE party IS NULL;
+SELECT name, leader FROM party;
+SELECT name, leader FROM party WHERE leader IS NOT NULL;
+SELECT DISTINCT party.name FROM party JOIN msp ON party = code WHERE msp.name IS NOT NULL;
+SELECT msp.name, party.name FROM party RIGHT JOIN msp ON party = code ORDER BY msp.name;
+SELECT party.name, COUNT(msp.name) FROM party RIGHT JOIN msp ON party = code WHERE party.name IS NOT NULL GROUP BY party.name;
+SELECT party.name, COUNT(msp.name) FROM party LEFT JOIN msp ON party = code GROUP BY party.name;
