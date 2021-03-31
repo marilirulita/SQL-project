@@ -217,3 +217,11 @@ SELECT DISTINCT party.name FROM party JOIN msp ON party = code WHERE msp.name IS
 SELECT msp.name, party.name FROM party RIGHT JOIN msp ON party = code ORDER BY msp.name;
 SELECT party.name, COUNT(msp.name) FROM party RIGHT JOIN msp ON party = code WHERE party.name IS NOT NULL GROUP BY party.name;
 SELECT party.name, COUNT(msp.name) FROM party LEFT JOIN msp ON party = code GROUP BY party.name;
+
+
+--- nss tests, pending 6, 7, 8 ---
+SELECT A_STRONGLY_AGREE FROM nss WHERE question='Q01' AND institution='Edinburgh Napier University' AND subject='(8) Computer Science';
+SELECT institution, subject FROM nss WHERE question='Q15' AND score >=100;
+SELECT institution,score FROM nss WHERE question='Q15' AND subject='(8) Computer Science' AND score < 50;
+SELECT subject, SUM(response) FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
+SELECT subject, SUM((A_STRONGLY_AGREE * response) / 100) FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
