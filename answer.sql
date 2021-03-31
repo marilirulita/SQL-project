@@ -225,3 +225,24 @@ SELECT institution, subject FROM nss WHERE question='Q15' AND score >=100;
 SELECT institution,score FROM nss WHERE question='Q15' AND subject='(8) Computer Science' AND score < 50;
 SELECT subject, SUM(response) FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
 SELECT subject, SUM((A_STRONGLY_AGREE * response) / 100) FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
+
+
+--- window functions, pending 5 and 6 ---
+SELECT lastName, party, votes FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY votes DESC
+SELECT party, votes, RANK() OVER (ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY party
+SELECT yr,party, votes, RANK() OVER (PARTITION BY yr ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000021' ORDER BY party, yr
+SELECT constituency,party, votes, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn FROM ge WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017 ORDER BY posn, constituency
+
+--- posible answer 5 ---
+SELECT * FROM (SELECT constituency,party, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
+  FROM ge
+WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
+   AND yr  = 2017
+) t WHERE posn = 1 
+ORDER BY constituency
+
+SELECT constituency,party, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
+  FROM ge
+WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
+   AND yr  = 2017
+ORDER BY constituency
