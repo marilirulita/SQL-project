@@ -1,7 +1,8 @@
+--- 0 SELECT basics questions ---
 SELECT population FROM world WHERE name = 'Germany';
 SELECT name, population FROM world WHERE name IN ('Sweden', 'Norway', 'Denmark');
 SELECT name, area FROM world WHERE area BETWEEN 200000 AND 250000;
-
+--- 0 SELECT basics test ---
 SELECT name, population FROM world WHERE population BETWEEN 1000000 AND 1250000;
 SELECT name, population FROM world WHERE name LIKE 'Al%';
 SELECT name FROM world WHERE name LIKE '%a' OR name LIKE '%l';
@@ -11,6 +12,7 @@ SELECT name, area, population FROM world WHERE area > 50000 AND population < 100
 SELECT name, population/area FROM world WHERE name IN ('China', 'Nigeria', 'France', 'Australia');
 
 
+--- 1 SELECT names questions ---
 SELECT name FROM world WHERE name LIKE 'Y%';
 SELECT name FROM world WHERE name LIKE '%y';
 SELECT name FROM world WHERE name LIKE '%x%';
@@ -28,6 +30,7 @@ SELECT capital, name FROM world WHERE capital LIKE CONCAT(name, '_%');
 SELECT name, REPLACE(capital, name, '') AS ext FROM world WHERE capital LIKE CONCAT(name, '_%');
 
 
+--- 2 SELECT from WORLD Tutorial questions ---
 SELECT name, continent, population FROM world;
 SELECT name FROM world WHERE population > 200000000;
 SELECT name, GDP/population FROM world WHERE population > 200000000;
@@ -41,7 +44,7 @@ SELECT name, ROUND(gdp/population, -3) FROM world WHERE gdp > 1000000000000;
 SELECT name, capital FROM world WHERE LENGTH(name) = LENGTH(capital);
 SELECT name, capital FROM world WHERE LEFT(name, 1) = LEFT(capital, 1) AND name <> capital;
 SELECT name FROM world WHERE name LIKE '%a%' AND name LIKE '%e%' AND name LIKE '%i%' AND name LIKE '%o%' AND name LIKE '%u%' AND name NOT LIKE '% %';
-
+--- 2 SELECT from WORLD Tutorial test ---
 SELECT name FROM world WHERE name LIKE 'U%';
 SELECT population FROM world WHERE name = 'United Kingdom';
 SELECT continent FROM world WHERE name = 'France';
@@ -51,6 +54,7 @@ SELECT name FROM world WHERE name IN ('Cuba', 'Togo');
 SELECT name FROM world WHERE continent = 'South America' AND population > 40000000;
 
 
+--- 3 SELECT from Nobel Tutorial questions ---
 SELECT * FROM nobel WHERE yr = 1950;
 SELECT winner FROM nobel WHERE yr = 1962 AND subject = 'Literature';
 SELECT yr, subject FROM nobel WHERE winner = 'Albert Einstein';
@@ -65,7 +69,7 @@ SELECT * FROM nobel WHERE winner LIKE 'PETER GRÜNBERG';
 SELECT * FROM nobel WHERE winner LIKE 'EUGENE O''NEILL';
 SELECT winner, yr, subject FROM nobel WHERE winner LIKE 'Sir%' ORDER BY yr DESC;
 SELECT winner, subject FROM nobel WHERE yr=1984 ORDER BY subject IN ('Physics', 'Chemistry'), subject, winner;
-
+--- 3 SELECT from Nobel Tutorial test ---
 SELECT winner FROM nobel WHERE winner LIKE 'C%n';
 SELECT COUNT(subject) FROM nobel WHERE subject = 'Chemistry' AND yr BETWEEN 1950 and 1960;
 SELECT COUNT(DISTINCT yr) FROM nobel WHERE yr NOT IN (SELECT DISTINCT yr FROM nobel WHERE subject = 'Medicine');
@@ -75,6 +79,7 @@ SELECT DISTINCT yr FROM nobel WHERE subject='Medicine' AND yr NOT IN(SELECT yr F
 SELECT subject, COUNT(subject) FROM nobel WHERE yr ='1960' GROUP BY subject;
 
 
+--- 4 SELECT within SELECT Tutorial questions ---
 SELECT name FROM world WHERE population > (SELECT population FROM world WHERE name='Russia');
 SELECT name FROM world WHERE (gdp/population) > (SELECT (gdp/population) FROM world WHERE name = 'United Kingdom') AND continent = 'Europe';
 SELECT name, continent FROM world WHERE continent IN (SELECT continent FROM world WHERE name IN ('Argentina', 'Australia')) ORDER BY name;
@@ -85,7 +90,7 @@ SELECT continent, name, area FROM world x WHERE area >= ALL (SELECT area FROM wo
 SELECT continent, MIN(name) FROM world GROUP BY continent;
 SELECT name, continent, population FROM world WHERE continent NOT IN (SELECT continent FROM world WHERE population > 25000000);
 SELECT name, continent FROM world x WHERE population > ALL (SELECT population * 3 FROM world y WHERE y.continent = x.continent AND y.name != x.name);
-
+--- 4 SELECT within SELECT Tutorial test ---
 SELECT region, name, population FROM bbc x WHERE population <= ALL (SELECT population FROM bbc y WHERE y.region=x.region AND population>0);
 SELECT name,region,population FROM bbc x WHERE 50000 < ALL (SELECT population FROM bbc y WHERE x.region=y.region AND y.population>0);
 SELECT name, region FROM bbc x WHERE population < ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name != x.name);
@@ -95,23 +100,28 @@ SELECT name FROM bbc WHERE population < (SELECT population FROM bbc WHERE name='
 SELECT name FROM bbc WHERE population > ALL (SELECT MAX(population) FROM bbc WHERE region = 'Europe') AND region = 'South Asia';
 
 
+--- 5 SUM and COUNT questions---
 SELECT SUM(population) FROM world;
 SELECT DISTINCT continent FROM world;
 SELECT SUM(gdp) FROM world WHERE continent = 'Africa';
 SELECT COUNT(name) FROM world WHERE area >= 1000000;
 SELECT SUM(population) FROM world WHERE name IN ('Estonia', 'Latvia', 'Lithuania');
 SELECT continent, COUNT(name) FROM world GROUP BY continent;
+SELECT continent, COUNT(name) FROM world WHERE population>10000000 GROUP BY continent;
+SELECT continent FROM world GROUP BY continent HAVING SUM(population)>100000000;
+--- 5 Using GROUP BY and HAVING.---
+SELECT continent, COUNT(name) FROM world GROUP BY continent;
 SELECT continent, SUM(population) FROM world GROUP BY continent;
 SELECT continent, COUNT(name) FROM world WHERE population>200000000 GROUP BY continent;
 SELECT continent, SUM(population) FROM world GROUP BY continent HAVING SUM(population)>500000000;
-
+--- 5 SUM and COUNT test ---
 SELECT SUM(population) FROM bbc WHERE region = 'Europe';
 SELECT COUNT(name) FROM bbc WHERE population < 150000;
 SELECT AVG(population) FROM bbc WHERE name IN ('Poland', 'Germany', 'Denmark');
 SELECT region, SUM(population)/SUM(area) AS density FROM bbc GROUP BY region;
 SELECT name, population/area AS density FROM bbc WHERE population = (SELECT MAX(population) FROM bbc);
 SELECT region, SUM(area) FROM bbc GROUP BY region HAVING SUM(area)<= 20000000;
-
+--- 5 The nobel table can be used to practice more SUM and COUNT functions ---
 SELECT subject, COUNT(winner) FROM nobel GROUP BY subject;
 SELECT subject, MIN(yr) FROM nobel GROUP BY subject;
 SELECT subject, COUNT(winner) FROM nobel WHERE yr = '2000' GROUP BY subject;
@@ -124,6 +134,7 @@ SELECT winner FROM nobel GROUP BY winner HAVING COUNT(DISTINCT subject) > 1;
 SELECT yr, subject FROM nobel WHERE yr >= 2000 GROUP BY yr, subject HAVING COUNT(subject) = 3;
 
 
+--- 6 JOIN, questions ---
 SELECT matchid, player FROM goal WHERE teamid = 'GER';
 SELECT id,stadium,team1,team2 FROM game WHERE id = 1012;
 SELECT player, teamid, stadium, mdate FROM game JOIN goal ON (id=matchid) WHERE teamid = 'GER';
@@ -136,17 +147,18 @@ SELECT teamname, COUNT(*) FROM eteam JOIN goal ON id=teamid GROUP BY teamname;
 SELECT stadium, COUNT(stadium) FROM game JOIN goal ON id=matchid GROUP BY stadium;
 SELECT matchid, mdate, COUNT(teamid) FROM game JOIN goal ON matchid = id WHERE (team1 = 'POL' OR team2 = 'POL') GROUP BY matchid, mdate;
 SELECT matchid, mdate, COUNT(teamid) FROM game JOIN goal ON matchid = id WHERE teamid = 'GER' GROUP BY matchid, mdate;
-SELECT name, population ,CASE WHEN population<1000000 THEN 'small' WHEN population<10000000 THEN 'medium' ELSE 'large' END FROM world;
 SELECT mdate, team1, 
   SUM(CASE WHEN teamid=team1 THEN 1 ELSE 0 END) score1, team2,
   SUM(CASE WHEN teamid=team2 THEN 1 ELSE 0 END) score2 FROM game LEFT JOIN goal ON id = matchid GROUP BY mdate, matchid, team1, team2;
 
+SELECT name, population ,CASE WHEN population<1000000 THEN 'small' WHEN population<10000000 THEN 'medium' ELSE 'large' END FROM world;
+--- 6 JOIN, test ---
 SELECT player, teamid, COUNT(*) FROM game JOIN goal ON matchid = id WHERE (team1 = "GRE" OR team2 = "GRE") AND teamid != 'GRE' GROUP BY player, teamid;
 SELECT DISTINCT teamid, mdate FROM goal JOIN game on (matchid=id) WHERE mdate = '9 June 2012';
 SELECT DISTINCT player, teamid FROM game JOIN goal ON matchid = id WHERE stadium = 'National Stadium, Warsaw' AND (team1 = 'POL' OR team2 = 'POL') AND teamid != 'POL';
 SELECT DISTINCT player, teamid, gtime FROM game JOIN goal ON matchid = id WHERE stadium = 'Stadion Miejski (Wroclaw)' AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'));
 SELECT teamname, COUNT(*) FROM eteam JOIN goal ON teamid = id GROUP BY teamname HAVING COUNT(*) < 3;
-
+--- Previously Music Tutorial ---
 SELECT title, artist FROM album JOIN track ON (album.asin=track.album) WHERE song = 'Alison';
 SELECT artist FROM album JOIN track ON (album.asin=track.album) WHERE song = 'Exodus';
 SELECT song FROM album JOIN track ON (album.asin=track.album) WHERE title = 'Blur';
@@ -157,7 +169,7 @@ SELECT DISTINCT title FROM album JOIN track ON (asin=album) WHERE title = artist
 SELECT song, COUNT(DISTINCT album) FROM track GROUP BY song HAVING COUNT(DISTINCT album) > 2;
 SELECT title, price, COUNT(song) FROM album JOIN track x ON (asin=album) WHERE price / (SELECT COUNT(song) FROM track y WHERE x.album = y.album) < .50 GROUP BY title, price;
 SELECT title, (SELECT COUNT(song) FROM track y WHERE x.album = y.album) AS counter FROM album JOIN track x ON (asin=album) GROUP BY title, album ORDER BY counter DESC, title;
-
+--- 6 JOIN, Old JOIN Tutorial questions ---
 SELECT who, name FROM ttms JOIN country ON (ttms.country=country.id) WHERE games = 2000;
 SELECT who, color FROM ttms JOIN country ON (ttms.country=country.id) WHERE name = 'Sweden';
 SELECT games FROM ttms JOIN country ON (ttms.country=country.id) WHERE name = 'China' AND color = 'gold';
@@ -169,7 +181,15 @@ SELECT name FROM ttmd JOIN team ON (ttmd.team=team.id) WHERE color = 'gold' AND 
 SELECT name FROM ttmd JOIN team ON (ttmd.team=team.id) WHERE country = 'FRA';
 
 
+--- 7 More JOIN operations, questions ---
+SELECT * FROM casting JOIN actor ON casting.actorid=actor.id WHERE actor.name='John Hurt'
 SELECT * FROM movie JOIN casting ON movie.id=movieid JOIN actor ON actorid=actor.id WHERE actor.name='John Hurt';
+--- 1 - 15 ---
+SELECT id, title FROM movie WHERE yr=1962
+SELECT yr FROM movie WHERE title='Citizen Kane'
+SELECT id, title, yr FROM movie WHERE title LIKE 'Star Trek%' ORDER BY yr
+SELECT id FROM actor WHERE name = 'Glenn Close'
+SELECT id FROM movie WHERE title = 'Casablanca'
 SELECT name FROM actor JOIN casting ON id = actorid WHERE movieid = 11768;
 SELECT name FROM actor JOIN casting ON actor.id = actorid JOIN movie ON movieid = movie.id WHERE movie.title = 'Alien';
 SELECT title FROM actor JOIN casting ON actor.id = actorid JOIN movie ON movieid = movie.id WHERE actor.name = 'Harrison Ford';
@@ -180,7 +200,7 @@ SELECT title, name FROM movie JOIN casting ON movie.id=movieid JOIN actor ON act
 SELECT name FROM casting JOIN actor ON actorid=actor.id WHERE ord = 1 GROUP BY name HAVING COUNT(name) >= 15 ORDER BY name;
 SELECT title, COUNT(actorid) FROM movie JOIN casting ON movie.id=movieid WHERE yr = 1978 GROUP BY title ORDER BY COUNT(actorid) DESC, title;
 SELECT name FROM casting JOIN actor ON actorid=actor.id WHERE name != 'Art Garfunkel' AND movieid IN (SELECT movieid FROM casting WHERE actorid IN (SELECT id FROM actor WHERE name = 'Art Garfunkel'));
-
+--- 7 More JOIN operations, test ---
 SELECT name FROM actor INNER JOIN movie ON actor.id = director WHERE gross < budget;
 SELECT * FROM actor JOIN casting ON actor.id = actorid JOIN movie ON movie.id = movieid;
 SELECT name, COUNT(movieid) FROM casting JOIN actor ON actorid=actor.id WHERE name LIKE 'John %' GROUP BY name ORDER BY 2 DESC;
@@ -189,27 +209,31 @@ SELECT name FROM movie JOIN casting ON movie.id = movieid JOIN actor ON actor.id
 SELECT title, yr FROM movie, casting, actor WHERE name='Robert De Niro' AND movieid=movie.id AND actorid=actor.id AND ord = 3;
 
 
+--- 8 using null questions---
 SELECT code, name FROM party WHERE leader IS NULL;
+--- 1 - 4 ---
 SELECT name FROM teacher WHERE dept IS NULL;
 SELECT teacher.name, dept.name FROM teacher INNER JOIN dept ON (teacher.dept=dept.id);
 SELECT teacher.name, dept.name FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
 SELECT teacher.name, dept.name FROM teacher RIGHT JOIN dept ON (teacher.dept=dept.id);
+
 SELECT name, party, COALESCE(party,'None') AS aff FROM msp WHERE name LIKE 'C%';
 SELECT name, party, NULLIF(party,'Lab') AS aff FROM msp WHERE name LIKE 'C%';
+-- 5 - 10 --
 SELECT name, COALESCE(mobile, '07986 444 2266')  FROM teacher;
 SELECT teacher.name, COALESCE(dept.name, 'None') FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
 SELECT COUNT(name), COUNT(mobile) FROM teacher;
 SELECT dept.name, COUNT(teacher.dept) FROM teacher RIGHT JOIN dept ON (teacher.dept=dept.id) WHERE teacher.dept = dept.id OR teacher.dept IS NULL GROUP BY dept.name;
 SELECT teacher.name, CASE WHEN dept.id = 1 OR dept.id = 2 THEN 'Sci' ELSE 'Art' END AS names FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
 SELECT teacher.name, CASE WHEN dept.id = 1 OR dept.id = 2 THEN 'Sci' WHEN dept.id = 3 THEN 'Art' ELSE 'None' END AS names FROM teacher LEFT JOIN dept ON (teacher.dept=dept.id);
-
+--- 8 using null test---
 SELECT teacher.name, dept.name FROM teacher LEFT OUTER JOIN dept ON (teacher.dept = dept.id);
 SELECT dept.name FROM teacher JOIN dept ON (dept.id = teacher.dept) WHERE teacher.name = 'Cutflower';
 SELECT dept.name, COUNT(teacher.name) FROM teacher RIGHT JOIN dept ON dept.id = teacher.dept GROUP BY dept.name;
 SELECT name, dept, COALESCE(dept, 0) AS result FROM teacher;
 SELECT name, CASE WHEN phone = 2752 THEN 'two' WHEN phone = 2753 THEN 'three' WHEN phone = 2754 THEN 'four' END AS digit FROM teacher;
 SELECT name, CASE WHEN dept IN (1) THEN 'Computing' ELSE 'Other' END FROM teacher;
-
+--- previously Scottish Parliament --- 
 SELECT name FROM msp WHERE party IS NULL;
 SELECT name, leader FROM party;
 SELECT name, leader FROM party WHERE leader IS NOT NULL;
@@ -219,36 +243,29 @@ SELECT party.name, COUNT(msp.name) FROM party RIGHT JOIN msp ON party = code WHE
 SELECT party.name, COUNT(msp.name) FROM party LEFT JOIN msp ON party = code GROUP BY party.name;
 
 
---- nss tests, pending 6, 7, 8 ---
+--- 8+ numeric examples, nss tests questions---
 SELECT A_STRONGLY_AGREE FROM nss WHERE question='Q01' AND institution='Edinburgh Napier University' AND subject='(8) Computer Science';
 SELECT institution, subject FROM nss WHERE question='Q15' AND score >=100;
 SELECT institution,score FROM nss WHERE question='Q15' AND subject='(8) Computer Science' AND score < 50;
 SELECT subject, SUM(response) FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
 SELECT subject, SUM((A_STRONGLY_AGREE * response) / 100) FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
+SELECT subject, ROUND(SUM(response * A_STRONGLY_AGREE/100) / SUM(response) * 100) FROM nss WHERE question = 'Q22'
+AND (subject = '(8) Computer Science' OR subject = '(H) Creative Arts and Design') GROUP BY subject;
+SELECT institution, ROUND(SUM(response * score/100) / SUM(response) * 100) FROM nss WHERE question = 'Q22' AND (institution LIKE '%Manchester%') GROUP BY institution;
+SELECT institution, SUM(sample), SUM(CASE WHEN subject='(8) Computer Science' THEN sample ELSE 0 END) FROM nss
+WHERE question='Q01' AND (institution LIKE '%Manchester%') GROUP BY institution;
 
 
---- window functions, pending 5 and 6 ---
+--- 9- window functions questions ---
 SELECT lastName, party, votes FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY votes DESC;
 SELECT party, votes, RANK() OVER (ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY party;
 SELECT yr,party, votes, RANK() OVER (PARTITION BY yr ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000021' ORDER BY party, yr;
 SELECT constituency,party, votes, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn FROM ge WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017 ORDER BY posn, constituency;
-
---- posible answer 5 ---
-SELECT * FROM (SELECT constituency,party, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
-  FROM ge
-WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
-   AND yr  = 2017
-) t WHERE posn = 1 
-ORDER BY constituency;
-
-SELECT constituency,party, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
-  FROM ge
-WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
-   AND yr  = 2017
-ORDER BY constituency;
+SELECT constituency, party FROM (SELECT constituency,party, votes, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn FROM ge WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017 ORDER BY posn, constituency) t WHERE t.posn = 1 ;
+SELECT party ,count(*) FROM (SELECT constituency, party FROM (SELECT constituency,party, votes, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn FROM ge WHERE constituency LIKE 'S%' AND yr  = 2017 ORDER BY posn, constituency) t WHERE t.posn = 1) y GROUP BY party;
 
 
---- window lag, covid 19, pending 8 ---
+--- 9+ window lag, covid 19, pending 8 ---
 SELECT name, DAY(whn), confirmed, deaths, recovered FROM covid WHERE name = 'Spain' AND MONTH(whn) = 3 ORDER BY whn;
 SELECT name, DAY(whn), confirmed, LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) FROM covid WHERE name = 'Italy' AND MONTH(whn) = 3 ORDER BY whn;
 SELECT name, DAY(whn), confirmed - LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) AS lag FROM covid WHERE name = 'Italy' AND MONTH(whn) = 3 ORDER BY whn;
@@ -258,6 +275,7 @@ SELECT name, confirmed, RANK() OVER (ORDER BY confirmed DESC) rc, deaths, RANK()
 SELECT world.name, ROUND(100000*confirmed/population,0), RANK() OVER (ORDER BY confirmed/population) rank FROM covid LEFT JOIN world ON covid.name=world.name WHERE whn = '2020-04-20' AND population > 10000000 ORDER BY population DESC;
 
 
+--- 9 self join, questions pending question 10 ---
 SELECT COUNT(*) FROM stops;
 SELECT id FROM stops WHERE name = 'Craiglockhart';
 SELECT id, name FROM stops JOIN route ON id = stop WHERE company = 'LRT' AND num = '4';
@@ -268,7 +286,7 @@ SELECT DISTINCT a.company, a.num FROM route a JOIN route b ON (a.company=b.compa
 SELECT DISTINCT a.company, a.num FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Craiglockhart' AND stopb.name = 'Tollcross';
 SELECT DISTINCT stopb.name, a.company, a.num FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Craiglockhart' AND a.company = 'LRT';
 
---- posible answer self join, question 10 ---
+--- posible answer question 10 ---
 SELECT DISTINCT  a.num, a.company, stopb.name, b.num, b.company
 FROM route a JOIN route b ON
   (a.stop=b.stop)
@@ -276,6 +294,7 @@ FROM route a JOIN route b ON
   JOIN stops stopb ON (b.stop=stopb.id)
 WHERE stopa.name='Craiglockhart'
 
+--- 9 self join, test ---
 SELECT DISTINCT a.name, b.name FROM stops a JOIN route z ON a.id=z.stop JOIN route y ON y.num = z.num JOIN stops b ON y.stop=b.id WHERE a.name='Craiglockhart' AND b.name ='Haymarket';
 SELECT S2.id, S2.name, R2.company, R2.num FROM stops S1, stops S2, route R1, route R2 WHERE S1.name='Haymarket' AND S1.id=R1.stop AND R1.company=R2.company AND R1.num=R2.num AND R2.stop=S2.id AND R2.num='2A';
 SELECT a.company, a.num, stopa.name, stopb.name FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Tollcross';
