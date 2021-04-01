@@ -4,7 +4,7 @@
 
 >**This project request to retrieve and organize different pieces of data from a table, showing a domain of SQL queries.**
 
-**In file answer.sql, are listened the answers for the test and tutorial of the page:**
+### In file answer.sql, are listened the answers for the test and tutorial of the page:
 
 - SQL tutorial: [sqlzoo](https://sqlzoo.net/wiki/SQL_Tutorial)
 
