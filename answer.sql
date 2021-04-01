@@ -228,10 +228,10 @@ SELECT subject, SUM((A_STRONGLY_AGREE * response) / 100) FROM nss WHERE question
 
 
 --- window functions, pending 5 and 6 ---
-SELECT lastName, party, votes FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY votes DESC
-SELECT party, votes, RANK() OVER (ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY party
-SELECT yr,party, votes, RANK() OVER (PARTITION BY yr ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000021' ORDER BY party, yr
-SELECT constituency,party, votes, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn FROM ge WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017 ORDER BY posn, constituency
+SELECT lastName, party, votes FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY votes DESC;
+SELECT party, votes, RANK() OVER (ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY party;
+SELECT yr,party, votes, RANK() OVER (PARTITION BY yr ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000021' ORDER BY party, yr;
+SELECT constituency,party, votes, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn FROM ge WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017 ORDER BY posn, constituency;
 
 --- posible answer 5 ---
 SELECT * FROM (SELECT constituency,party, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
@@ -239,19 +239,43 @@ SELECT * FROM (SELECT constituency,party, RANK() OVER (PARTITION BY constituency
 WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
    AND yr  = 2017
 ) t WHERE posn = 1 
-ORDER BY constituency
+ORDER BY constituency;
 
 SELECT constituency,party, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) AS posn
   FROM ge
 WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
    AND yr  = 2017
-ORDER BY constituency
+ORDER BY constituency;
 
 
-SELECT name, DAY(whn), confirmed, deaths, recovered FROM covid WHERE name = 'Spain' AND MONTH(whn) = 3 ORDER BY whn
-SELECT name, DAY(whn), confirmed, LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) FROM covid WHERE name = 'Italy' AND MONTH(whn) = 3 ORDER BY whn
-SELECT name, DAY(whn), confirmed - LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) AS lag FROM covid WHERE name = 'Italy' AND MONTH(whn) = 3 ORDER BY whn
-SELECT name, DATE_FORMAT(whn,'%Y-%m-%d'), confirmed - LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) AS lag FROM covid WHERE name = 'Italy' AND WEEKDAY(whn) = 0 ORDER BY whn
-SELECT tw.name, DATE_FORMAT(tw.whn,'%Y-%m-%d'), tw.confirmed - lw.confirmed FROM covid tw LEFT JOIN covid lw ON DATE_ADD(lw.whn, INTERVAL 1 WEEK) = tw.whn AND tw.name=lw.name WHERE tw.name = 'Italy' AND WEEKDAY(tw.whn) = 0 ORDER BY tw.whn
-SELECT name, confirmed, RANK() OVER (ORDER BY confirmed DESC) rc, deaths, RANK() OVER (ORDER BY deaths DESC) rd FROM covid WHERE whn = '2020-04-20' ORDER BY confirmed DESC
-SELECT world.name, ROUND(100000*confirmed/population,0), RANK() OVER (ORDER BY confirmed/population) rank FROM covid LEFT JOIN world ON covid.name=world.name WHERE whn = '2020-04-20' AND population > 10000000 ORDER BY population DESC
+--- window lag, covid 19, pending 8 ---
+SELECT name, DAY(whn), confirmed, deaths, recovered FROM covid WHERE name = 'Spain' AND MONTH(whn) = 3 ORDER BY whn;
+SELECT name, DAY(whn), confirmed, LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) FROM covid WHERE name = 'Italy' AND MONTH(whn) = 3 ORDER BY whn;
+SELECT name, DAY(whn), confirmed - LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) AS lag FROM covid WHERE name = 'Italy' AND MONTH(whn) = 3 ORDER BY whn;
+SELECT name, DATE_FORMAT(whn,'%Y-%m-%d'), confirmed - LAG(confirmed, 1) OVER (PARTITION BY name ORDER BY whn) AS lag FROM covid WHERE name = 'Italy' AND WEEKDAY(whn) = 0 ORDER BY whn;
+SELECT tw.name, DATE_FORMAT(tw.whn,'%Y-%m-%d'), tw.confirmed - lw.confirmed FROM covid tw LEFT JOIN covid lw ON DATE_ADD(lw.whn, INTERVAL 1 WEEK) = tw.whn AND tw.name=lw.name WHERE tw.name = 'Italy' AND WEEKDAY(tw.whn) = 0 ORDER BY tw.whn;
+SELECT name, confirmed, RANK() OVER (ORDER BY confirmed DESC) rc, deaths, RANK() OVER (ORDER BY deaths DESC) rd FROM covid WHERE whn = '2020-04-20' ORDER BY confirmed DESC;
+SELECT world.name, ROUND(100000*confirmed/population,0), RANK() OVER (ORDER BY confirmed/population) rank FROM covid LEFT JOIN world ON covid.name=world.name WHERE whn = '2020-04-20' AND population > 10000000 ORDER BY population DESC;
+
+
+SELECT COUNT(*) FROM stops;
+SELECT id FROM stops WHERE name = 'Craiglockhart';
+SELECT id, name FROM stops JOIN route ON id = stop WHERE company = 'LRT' AND num = '4';
+SELECT company, num, COUNT(*) FROM route WHERE stop=149 OR stop=53 GROUP BY company, num HAVING COUNT(*) = 2;
+SELECT a.company, a.num, a.stop, b.stop FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) WHERE a.stop=53 AND b.stop = 149;
+SELECT a.company, a.num, stopa.name, stopb.name FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Craiglockhart' AND stopb.name = 'London Road';
+SELECT DISTINCT a.company, a.num FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Haymarket' AND stopb.name = 'Leith';
+SELECT DISTINCT a.company, a.num FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Craiglockhart' AND stopb.name = 'Tollcross';
+SELECT DISTINCT stopb.name, a.company, a.num FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Craiglockhart' AND a.company = 'LRT';
+
+--- posible answer self join, question 10 ---
+SELECT DISTINCT  a.num, a.company, stopb.name, b.num, b.company
+FROM route a JOIN route b ON
+  (a.stop=b.stop)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+WHERE stopa.name='Craiglockhart'
+
+SELECT DISTINCT a.name, b.name FROM stops a JOIN route z ON a.id=z.stop JOIN route y ON y.num = z.num JOIN stops b ON y.stop=b.id WHERE a.name='Craiglockhart' AND b.name ='Haymarket';
+SELECT S2.id, S2.name, R2.company, R2.num FROM stops S1, stops S2, route R1, route R2 WHERE S1.name='Haymarket' AND S1.id=R1.stop AND R1.company=R2.company AND R1.num=R2.num AND R2.stop=S2.id AND R2.num='2A';
+SELECT a.company, a.num, stopa.name, stopb.name FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num) JOIN stops stopa ON (a.stop=stopa.id) JOIN stops stopb ON (b.stop=stopb.id) WHERE stopa.name='Tollcross';
